@@ -4,44 +4,40 @@ import Parking from "../models/Parking.js";
 
 import moment from "moment";
 
-// Helper function to get the dates for the previous week (Monday to Saturday)
-function getLastWeekDates() {
-  const dates = [];
-  const today = moment().startOf("day");
-  const lastSunday = today.clone().subtract(today.day() + 1, "days");
-
-  for (let i = 0; i < 6; i++) {
-    dates.push(lastSunday.clone().subtract(i, "days").toDate());
-  }
-
-  return dates.reverse();
+function getDay(dateString) {
+  return moment(dateString).format("dddd");
 }
 
-// Helper function to get the entries count by day and format the output
+async function getEntriesByDay() {
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const results = {};
 
-async function getEntriesByDay(dates) {
-  const results = [];
+  daysOfWeek.forEach((day) => {
+    results[day] = 0;
+  });
 
-  for (const date of dates) {
-    const startOfDay = moment
-      .utc(date)
-      .startOf("day")
-      .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-    const endOfDay = moment
-      .utc(date)
-      .endOf("day")
-      .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-    const dayName = moment.utc(date).format("dddd");
+  const logs = await Log.find({
+    isEntering: true,
+  });
 
-    const count = await Log.countDocuments({
-      time: { $gte: startOfDay, $lte: endOfDay },
-      isEntering: true,
-    });
+  logs.map((log) => {
+    const dayName = getDay(log.time);
+    results[dayName]++;
+  });
 
-    results.push({ day: dayName, parkedSlots: count });
-  }
+  const formattedResults = Object.entries(results).map(([day, count]) => ({
+    day,
+    parkedSlots: count,
+  }));
 
-  return results;
+  return formattedResults;
 }
 
 const getTodaysHours = () => {
@@ -83,11 +79,10 @@ const getCarCountsByHour = async (hours) => {
 const generateData = async (req, res) => {
   try {
     const lastEntry = await Log.findOne().sort({ _id: -1 });
-    const lastWeekDates = getLastWeekDates();
-    const entriesByDay = await getEntriesByDay(lastWeekDates);
-    const todaysHours = getTodaysHours();
-    const entriesByHour = await getCarCountsByHour(todaysHours);
-    res.json({ entriesByDay, entriesByHour, lastEntry });
+    const entriesByDay = await getEntriesByDay();
+    // const todaysHours = getTodaysHours();
+    // const entriesByHour = await getCarCountsByHour(todaysHours);
+    res.json({ entriesByDay, lastEntry });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

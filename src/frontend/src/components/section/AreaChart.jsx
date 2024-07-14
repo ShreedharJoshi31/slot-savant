@@ -63,7 +63,6 @@ const data = [
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const days = [
-    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
@@ -87,7 +86,7 @@ export default class Example extends PureComponent {
       <AreaChart
         width={800}
         height={300}
-        data={data ? data : 0}
+        data={data ? data : formattedData}
         margin={{
           top: 10,
           right: 30,

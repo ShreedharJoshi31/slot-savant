@@ -105,7 +105,11 @@ export default function Dashboard() {
               Parking Lot Engagement
             </p>
             <div className="flex justify-center">
-              <AreaChart data={dashboard.entriesByDay} />
+              <AreaChart
+                data={dashboard.entriesByDay?.filter(
+                  (item) => item.day !== "Sunday"
+                )}
+              />
             </div>
           </div>
 

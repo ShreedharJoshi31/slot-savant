@@ -10,7 +10,6 @@ Slot Savant is a Vehicle Movement Analysis System designed to manage and analyze
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Setup](#setup)
 - [Closing](#closing)
 
 ## Project Description

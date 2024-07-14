@@ -87,7 +87,7 @@ export default class Example extends PureComponent {
       <AreaChart
         width={800}
         height={300}
-        data={formattedData ? formattedData : 0}
+        data={data ? data : 0}
         margin={{
           top: 10,
           right: 30,
@@ -103,6 +103,7 @@ export default class Example extends PureComponent {
           dataKey="parkedSlots"
           stroke="#22C55E "
           fill="#22C55E"
+          opacity={0.6}
         />
       </AreaChart>
     );

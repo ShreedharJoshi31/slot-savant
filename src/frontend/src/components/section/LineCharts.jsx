@@ -92,9 +92,9 @@ const LineCharts = () => {
 
   const chartData = processData(data);
   return (
-    <LineChart width={600} height={300} data={chartData}>
-      <Line type="monotone" dataKey="count" stroke="#38BDF8" strokeWidth={3} />
-      <XAxis dataKey="day" stroke="#F8FAFC " />
+    <LineChart width={500} height={300} data={chartData}>
+      <Line type="monotone" dataKey="count" stroke="#22C55E" strokeWidth={3} />
+      <XAxis dataKey="day" stroke="#F8FAFC " fontSize={14} />
       <YAxis stroke="#F8FAFC " />
       {/* <CartesianGrid stroke="hsl(var(--primary))" strokeDasharray="5 5" /> */}
       <Tooltip />

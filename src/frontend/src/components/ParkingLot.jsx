@@ -1,22 +1,6 @@
 import React from "react";
 
 const ParkingLot = ({ emptySpots }) => {
-  const positions = {
-    1: "",
-    2: "",
-    3: "",
-    4: "",
-    5: "",
-    6: "",
-    7: "",
-    9: "",
-    10: "",
-    11: "",
-    12: "",
-    13: "",
-    14: "",
-  };
-
   const some = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
   const result = some.filter((x) => !emptySpots?.includes(x));
 

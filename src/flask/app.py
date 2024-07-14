@@ -7,6 +7,10 @@ import numpy as np
 import sys
 from flask_pymongo import PyMongo
 from utils import detect_most_common_text, process_parking_image, entry, exit_car
+import pytz
+
+
+indian_tz = pytz.timezone('Asia/Kolkata')
 
 
 app = Flask(__name__)
@@ -39,10 +43,15 @@ def enter_car():
             takenSpot = empty_spots[0]
             entry(takenSpot)
             if takenSpot != -1:
-                db.parking.insert_one({'car': car_id, "time": datetime.now(), "emptySpots": empty_spots, "parkedSlots": parked_slots, "takenSpot": takenSpot})
-                db.logs.insert_one({'car': car_id, "time": datetime.now(), "emptySpots": empty_spots, "parkedSlots": parked_slots, "takenSpot": takenSpot, "isEntering": True})
+                db.parking.insert_one({'car': car_id, "time": datetime.now(indian_tz), "emptySpots": empty_spots, "parkedSlots": parked_slots, "takenSpot": takenSpot})
+                db.logs.insert_one({'car': car_id, "time": datetime.now(indian_tz), "emptySpots": empty_spots, "parkedSlots": parked_slots, "takenSpot": takenSpot, "isEntering": True})
                 db.cars.update_one({"carNumberPlate": most_common_text}, {"$set": {"isParked": True}})
-                return jsonify({'text': most_common_text.upper(), 'details': details, 'parked': result[0], 'total': result[1], "time": datetime.now(), "parkedSlots": parked_slots, "takenSpot": takenSpot})
+                print(jsonify({
+                    'message': "Car entered"
+                }))
+                return jsonify({
+                    'message': "Car entered"
+                })
             else:
                 return jsonify({'error': 'No spots left'})
     else:
@@ -79,7 +88,7 @@ def exit_car_endpoint():
 
                 db.logs.insert_one({
                     'car': car_id, 
-                    "time": datetime.now(), 
+                    "time": datetime.now(indian_tz), 
                     "emptySpots": empty_spots, 
                     "parkedSlots": parked_slots, 
                     "takenSpot": takenSpot, 
@@ -90,13 +99,7 @@ def exit_car_endpoint():
                     {"$set": {"isParked": False}}
                 )
                 return jsonify({
-                    'text': most_common_text.upper(), 
-                    'details': details, 
-                    'parked': result[0], 
-                    'total': result[1], 
-                    "time": datetime.now(), 
-                    "parkedSlots": parked_slots, 
-                    "takenSpot": takenSpot
+                    'message': "Car exited"
                 })
             else:
                 return jsonify({'error': 'Car is not parked in the lot'})

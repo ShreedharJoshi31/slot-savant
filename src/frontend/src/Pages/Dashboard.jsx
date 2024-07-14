@@ -36,9 +36,11 @@ export default function Dashboard() {
   }, [dashboard]);
 
   const emptySpots = dashboard?.lastEntry?.emptySpots
-    ? dashboard?.lastEntry?.emptySpots.filter(
-        (element) => element !== dashboard?.lastEntry?.takenSpot
-      )
+    ? dashboard?.lastEntry?.isEntering
+      ? dashboard?.lastEntry?.emptySpots.filter(
+          (element) => element !== dashboard?.lastEntry?.takenSpot
+        )
+      : [dashboard?.lastEntry?.takenSpot, ...dashboard?.lastEntry?.emptySpots]
     : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
   return (
@@ -66,7 +68,9 @@ export default function Dashboard() {
             <CardContent>
               <div className="text-xl font-bold">
                 {dashboard.lastEntry
-                  ? dashboard.lastEntry?.emptySpots.length - 1
+                  ? dashboard?.lastEntry?.isEntering
+                    ? dashboard.lastEntry?.emptySpots.length - 1
+                    : dashboard.lastEntry?.emptySpots.length + 1
                   : 14}
               </div>
             </CardContent>
@@ -80,10 +84,12 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-xl font-bold">
-                {15 -
+                {14 -
                   (dashboard.lastEntry
-                    ? dashboard.lastEntry?.emptySpots.length
-                    : 15)}
+                    ? dashboard?.lastEntry?.isEntering
+                      ? dashboard.lastEntry?.emptySpots.length - 1
+                      : dashboard.lastEntry?.emptySpots.length + 1
+                    : 14)}
               </div>
             </CardContent>
           </Card>
@@ -96,7 +102,7 @@ export default function Dashboard() {
           {/* AreaChart */}
           <div className="col-span-2 border rounded-md shadow-lg p-5 pr-0">
             <p className="font-bold text-left text-xl mb-4">
-              Rate of Parking Spots
+              Parking Lot Engagement
             </p>
             <div className="flex justify-center">
               <AreaChart data={dashboard.entriesByDay} />
@@ -105,7 +111,7 @@ export default function Dashboard() {
 
           <div className="border rounded-md shadow-lg p-5 pr-0 row-span-2">
             <p className="font-bold text-left text-xl mb-4">
-              Rate of Parking Spots
+              Realtime Parking Lot Status
             </p>
             <div className="w-full">
               <ParkingLot emptySpots={emptySpots} />
@@ -114,19 +120,19 @@ export default function Dashboard() {
           </div>
 
           {/* RadarChart */}
-          <div className="col-span-1 border rounded-md shadow-lg p-5 pr-0 ">
+          {/* <div className="col-span-1 border rounded-md shadow-lg p-5 pr-0 ">
             <p className="font-bold text-left text-xl mb-4">
               Average Parking Duration
             </p>
-            <div className="flex justify-center">
+            <div className="flex mr-10 mt-12 justify-center">
               <LineCharts data={dashboard.entriesByHour} />
             </div>
-          </div>
+          </div> */}
 
           {/* PieChart */}
-          <div className=" col-span-1 border rounded-md shadow-lg p-5 pr-0">
+          <div className=" col-span-2 border rounded-md shadow-lg p-5 pr-0">
             <p className="font-bold text-left text-xl mb-4">
-              Rate of Parking Spots
+              Real Time Slot Avaiilability
             </p>
             <div className="flex justify-center">
               <PieChart data={dashboard.lastEntry} />

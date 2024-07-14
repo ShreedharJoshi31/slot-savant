@@ -92,17 +92,33 @@ export default class ParkingChart extends PureComponent {
 
   render() {
     const { data } = this.props;
-    // const formattedData = [
-    //   { name: "Filled", value: 15 - (data ? data?.emptySpots.length : 15) },
-    //   { name: "Empty", value: data ? data?.emptySpots.length - 1 : 14 },
-    // ];
     const formattedData = [
-      { name: "Filled", value: 10 },
-      { name: "Empty", value: 10 },
+      {
+        name: "Filled",
+        value:
+          14 -
+          (data
+            ? data?.isEntering
+              ? data?.emptySpots.length - 1
+              : data?.emptySpots.length + 1
+            : 14),
+      },
+      {
+        name: "Empty",
+        value: data
+          ? data?.isEntering
+            ? data?.emptySpots.length - 1
+            : data?.emptySpots.length + 1
+          : 14,
+      },
     ];
+    // const formattedData = [
+    //   { name: "Filled", value: 10 },
+    //   { name: "Empty", value: 10 },
+    // ];
 
     return (
-      <PieChart width={300} height={300}>
+      <PieChart width={500} height={300}>
         <Pie
           activeIndex={this.state.activeIndex}
           activeShape={renderActiveShape}
@@ -111,7 +127,7 @@ export default class ParkingChart extends PureComponent {
           cy="50%"
           innerRadius={60}
           outerRadius={80}
-          fill="#38BDF8"
+          fill="#22C55E"
           stroke="hsl(var(--secondary))"
           strokeWidth={2}
           dataKey="value"

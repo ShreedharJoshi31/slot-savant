@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Link } from "react-router-dom";
 import {
@@ -18,19 +18,24 @@ import {
   CircleParkingOff,
 } from "lucide-react";
 import axios from "axios";
+import LoadingSpinner from "../ui/loading";
 
 export default function Navbar() {
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const vehicleEntry = async () => {
+    setIsLoading(true);
     try {
-      const response = await axios.get(
-        "https://slot-savant-flask.onrender.com/enter_car"
-      );
+      const response = await axios.get("http://localhost:5000/enter_car");
       console.log(response);
       toast({
+        variant: `${response.data.message ? "" : "destructive"}`,
         title: "Vehicle Entry",
-        description: "Vehicle has entered the parking lot.",
+        description:
+          response.data.message ||
+          response.data.error ||
+          "Vehicle has entered the parking lot.",
         action: <ToastAction altText="Close">Close</ToastAction>,
       });
     } catch (error) {
@@ -41,18 +46,23 @@ export default function Navbar() {
         description: "Failed to register vehicle entry.",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const vehicleExit = async () => {
+    setIsLoading(true);
     try {
-      const response = await axios.get(
-        "https://slot-savant-flask.onrender.com/exit_car"
-      );
+      const response = await axios.get("http://localhost:5000/exit_car");
       console.log(response);
       toast({
+        variant: `${response.data.message ? "" : "destructive"}`,
         title: "Vehicle Exit",
-        description: "Vehicle has exited the parking lot.",
+        description:
+          response.data.message ||
+          response.data.error ||
+          "Vehicle has exited the parking lot.",
         action: <ToastAction altText="Close">Close</ToastAction>,
       });
     } catch (error) {
@@ -63,11 +73,14 @@ export default function Navbar() {
         description: "Failed to register vehicle exit.",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div>
+      {isLoading && <LoadingSpinner />}
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link

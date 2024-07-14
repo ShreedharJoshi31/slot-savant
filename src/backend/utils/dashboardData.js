@@ -82,8 +82,7 @@ const getCarCountsByHour = async (hours) => {
 
 const generateData = async (req, res) => {
   try {
-    const lastEntry = await Parking.findOne().sort({ _id: -1 });
-    console.log(lastEntry);
+    const lastEntry = await Log.findOne().sort({ _id: -1 });
     const lastWeekDates = getLastWeekDates();
     const entriesByDay = await getEntriesByDay(lastWeekDates);
     const todaysHours = getTodaysHours();
